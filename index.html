@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="city-name" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button id="search-btn" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="img"  src="" alt="">
+            <h1 id="print-city">Dhaka</h1>
+            <h3><span id="temp">38.06</span>&deg;C</h3>
+            <h1 id="lead">Clouds</h1>
+        </div>
+    </div>
+    <script>
+        document.getElementById('search-btn').addEventListener('click',function(){
+            const city = document.getElementById('city-name').value;
+            let  displayCity = document.getElementById('print-city');
+            displayCity.innerText = city;
+            temperatureApiCall(city);
+           
+
+        })
+        function temperatureApiCall(city){
+                fetch(`https://api.openweathermap.org/data/2.5/weather?q= ${city} &appid=d7dc395548de91b43bec04db4bd433d9`)
+                .then(res => res.json())
+                .then(data => {
+                    kalbinToCelcius(data);
+                    weather(data);
+                    setIcon(data);
+            });
+            }
+        function setIcon(data){
+            const iconImg = data.weather[0].icon;
+                    console.log(iconImg);
+                    const icon = ` https://openweathermap.org/img/wn/${iconImg}@2x.png`
+                    document.getElementById('img').src = icon;
+                   
+        }
+        function kalbinToCelcius(data){
+            const temperatureKelbin = parseFloat(data.main.temp);
+                const celcius = temperatureKelbin - 273;
+                document.getElementById('temp').innerText = celcius.toFixed(2);
+        }
+        function weather(data){
+           const aboutWeather = data.weather[0].description;
+                console.log(aboutWeather);
+                document.getElementById('lead').innerText = aboutWeather.toUpperCase();
+                
+        }
+        
+    </script>
+
+</body>
+
+</html>
